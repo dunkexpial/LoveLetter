@@ -309,10 +309,12 @@
       overflow: hidden;
       background: #fff;
       border: 1px solid rgba(201,169,110,0.4);
-      padding: 10px 10px 42px;
+      padding: 10px;
       box-shadow: 0 6px 25px rgba(42,79,139,0.12), 0 2px 6px rgba(0,0,0,0.07);
       transform: rotate(var(--rot, 0deg));
       transition: transform 0.35s ease, box-shadow 0.35s ease;
+      display: flex;
+      flex-direction: column;
     }
     .photo-frame:hover {
       transform: rotate(0deg) scale(1.03);
@@ -327,18 +329,16 @@
     .photo-frame:nth-child(6) { --rot: -0.9deg; grid-column: 3; grid-row: 2; }
 
     .photo-slot {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      display: block;
-      background: linear-gradient(135deg, #c8dcf5, #b8cce8);
-      position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, #c8dcf5, #b8cce8);
+    flex-shrink: 0;                         /* ← novo: impede a foto de encolher */
     }
-
+    
     .photo-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 8px 10px;
+      padding: 8px 10px 10px;                 /* ← agora é padding normal, não absoluto */
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
@@ -346,6 +346,7 @@
       color: var(--ink-soft);
       text-align: center;
       letter-spacing: 0.05em;
+      /* position, bottom, left, right removidos */
     }
 
     /* ── Reasons section ── */
@@ -712,4 +713,5 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
+
 </html>
