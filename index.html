@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pra você, Meu amor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Pinyon+Script&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #eef3fd;
+      --parchment: #dce8f5;
+      --blush: #b4c8e8;
+      --rose: #4a7abf;
+      --deep-rose: #2a4f8b;
+      --burgundy: #1a2f5c;
+      --gold: #c9a96e;
+      --gold-light: #e8d5a3;
+      --ink: #0d1a2e;
+      --ink-soft: #2c3f5a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--ink);
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      color: var(--ink);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Floating petals ── */
+    .petals-wrap {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -40px;
+      width: 12px;
+      height: 18px;
+      border-radius: 60% 40% 60% 40% / 60% 60% 40% 40%;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    .petal:nth-child(odd)  { background: rgba(100,150,220,0.40); }
+    .petal:nth-child(even) { background: rgba(201,169,110,0.30); }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(0.6); opacity: 0; }
+    }
+
+    /* ── Cover / Hero ── */
+    .cover {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at 50% 30%, #0e2040 0%, #060d1a 60%, #030508 100%);
+      overflow: hidden;
+      z-index: 1;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cover-glow {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,79,139,0.45) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      animation: pulse-glow 4s ease-in-out infinite alternate;
+    }
+    @keyframes pulse-glow {
+      from { opacity: 0.6; transform: translate(-50%, -55%) scale(1); }
+      to   { opacity: 1;   transform: translate(-50%, -55%) scale(1.15); }
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      animation: fadeUp 1.8s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cover-eyebrow {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.45em;
+      font-size: 0.82rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 1.4s 0.5s ease forwards;
+    }
+
+    .cover-title {
+      font-family: 'Pinyon Script', cursive;
+      font-size: clamp(4rem, 12vw, 9rem);
+      color: var(--cream);
+      line-height: 1;
+      text-shadow: 0 0 60px rgba(201,169,110,0.4), 0 2px 8px rgba(0,0,0,0.6);
+      opacity: 0;
+      animation: fadeUp 1.6s 0.3s ease forwards;
+    }
+
+    .cover-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.6rem 0;
+      opacity: 0;
+      animation: fadeUp 1.4s 0.8s ease forwards;
+    }
+    .cover-divider span { display: block; width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+    .cover-heart {
+      color: var(--rose);
+      font-size: 1.1rem;
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.3); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.2); }
+      56% { transform: scale(1); }
+    }
+
+    .cover-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gold-light);
+      font-size: clamp(1.1rem, 3vw, 1.55rem);
+      letter-spacing: 0.1em;
+      opacity: 0;
+      animation: fadeUp 1.4s 1s ease forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(201,169,110,0.5);
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: fadeUp 1s 2s ease forwards, bounce 2s 3s ease-in-out infinite;
+      opacity: 0;
+    }
+    .scroll-hint::after {
+      content: '↓';
+      font-size: 1rem;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      background: var(--cream);
+    }
+
+    /* ── Section base ── */
+    section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    /* ── Ornamental separator ── */
+    .ornament {
+      text-align: center;
+      color: var(--gold);
+      font-size: 1.4rem;
+      letter-spacing: 0.6em;
+      margin: 0 auto 3.5rem;
+      opacity: 0.7;
+    }
+    .ornament::before, .ornament::after {
+      content: '✦';
+      display: inline-block;
+      margin: 0 0.6rem;
+      font-size: 0.6rem;
+      vertical-align: middle;
+    }
+
+    /* ── Letter section ── */
+    .letter-section {
+      background: var(--cream);
+    }
+    .letter-paper {
+      background: #fffdf7;
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 2px;
+      padding: 3.5rem 4rem;
+      box-shadow:
+        0 1px 0 rgba(201,169,110,0.2) inset,
+        0 25px 60px rgba(92,31,54,0.08),
+        0 4px 15px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      left: 3.8rem; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.2), transparent);
+    }
+    .letter-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--rose);
+      font-size: 1.05rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+    .letter-greeting {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 2.8rem;
+      color: var(--deep-rose);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    .letter-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 2;
+      color: var(--ink-soft);
+    }
+    .letter-body p { margin-bottom: 1.4em; }
+    .letter-body em { color: var(--deep-rose); font-style: italic; }
+    .letter-sign {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 2.4rem;
+      color: var(--deep-rose);
+      text-align: right;
+      margin-top: 2rem;
+    }
+
+    /* ── Photos section ── */
+    .photos-section {
+      background: var(--parchment);
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+      max-width: 100%;
+    }
+    .photos-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .photos-heading {
+      text-align: center;
+      font-family: 'Pinyon Script', cursive;
+      font-size: 3.5rem;
+      color: var(--deep-rose);
+      margin-bottom: 0.5rem;
+    }
+    .photos-sub {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--rose);
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 3rem;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto auto;
+      gap: 1.2rem;
+    }
+    .photo-frame {
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid rgba(201,169,110,0.4);
+      padding: 10px 10px 42px;
+      box-shadow: 0 6px 25px rgba(42,79,139,0.12), 0 2px 6px rgba(0,0,0,0.07);
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .photo-frame:hover {
+      transform: rotate(0deg) scale(1.03);
+      box-shadow: 0 14px 40px rgba(42,79,139,0.22);
+      z-index: 10;
+    }
+    .photo-frame:nth-child(1) { --rot: -1.5deg; grid-column: 1; grid-row: 1; }
+    .photo-frame:nth-child(2) { --rot:  0.8deg; grid-column: 2; grid-row: 1; }
+    .photo-frame:nth-child(3) { --rot:  1.2deg; grid-column: 3; grid-row: 1; }
+    .photo-frame:nth-child(4) { --rot: -0.7deg; grid-column: 1; grid-row: 2; }
+    .photo-frame:nth-child(5) { --rot:  1.8deg; grid-column: 2; grid-row: 2; }
+    .photo-frame:nth-child(6) { --rot: -0.9deg; grid-column: 3; grid-row: 2; }
+
+    .photo-slot {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #c8dcf5, #b8cce8);
+      position: relative;
+    }
+
+    .photo-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 8px 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.20rem;
+      color: var(--ink-soft);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Reasons section ── */
+    .reasons-section {
+      background: var(--cream);
+    }
+    .reasons-heading {
+      text-align: center;
+      font-family: 'Pinyon Script', cursive;
+      font-size: 3rem;
+      color: var(--deep-rose);
+      margin-bottom: 0.4rem;
+    }
+    .reasons-sub {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+      color: var(--rose);
+      margin-bottom: 3rem;
+    }
+    .reasons-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    .reason-item {
+      background: #fffdf7;
+      border: 1px solid rgba(201,169,110,0.25);
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      box-shadow: 0 4px 18px rgba(42,79,139,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .reason-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(42,79,139,0.12);
+    }
+    .reason-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+      min-width: 2rem;
+      opacity: 0.8;
+    }
+    .reason-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    /* ── Memory timeline ── */
+    .timeline-section { background: var(--parchment); }
+    .timeline-heading {
+      text-align: center;
+      font-family: 'Pinyon Script', cursive;
+      font-size: 3rem;
+      color: var(--deep-rose);
+      margin-bottom: 0.4rem;
+    }
+    .timeline-sub {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+      color: var(--rose);
+      margin-bottom: 3rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold), var(--gold), transparent);
+    }
+    .tl-item {
+      position: relative;
+      padding: 0 0 2.5rem 2rem;
+    }
+    .tl-item::before {
+      content: '♥';
+      position: absolute;
+      left: -0.55rem;
+      top: 0.1rem;
+      font-size: 0.7rem;
+      color: var(--rose);
+    }
+    .tl-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.82rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+    .tl-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--deep-rose);
+      margin-bottom: 0.4rem;
+    }
+    .tl-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-style: italic;
+      line-height: 1.75;
+    }
+
+    /* ── Closing ── */
+    .closing-section {
+      background: radial-gradient(ellipse at 50% 80%, #0e2040 0%, #060d1a 60%, #030508 100%);
+      padding: 6rem 2rem;
+      text-align: center;
+      color: var(--cream);
+    }
+    .closing-heart {
+      font-size: 3rem;
+      color: var(--rose);
+      animation: heartbeat 2s ease-in-out infinite;
+      display: block;
+      margin-bottom: 2rem;
+    }
+    .closing-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 4vw, 2.3rem);
+      color: var(--gold-light);
+      max-width: 580px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .closing-attr {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(201,169,110,0.6);
+    }
+    .closing-sign {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 4rem;
+      color: var(--rose);
+      margin-top: 3rem;
+      text-shadow: 0 0 40px rgba(74,122,191,0.4);
+    }
+
+    /* ── Reveal on scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .letter-paper { padding: 2rem 1.5rem; }
+      .letter-paper::before { left: 1.4rem; }
+      .photo-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .photo-frame:nth-child(1),
+      .photo-frame:nth-child(2),
+      .photo-frame:nth-child(3),
+      .photo-frame:nth-child(4),
+      .photo-frame:nth-child(5),
+      .photo-frame:nth-child(6) { grid-column: auto; grid-row: auto; }
+      .reasons-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="petals-wrap" id="petals"></div>
+
+<div class="cover">
+  <div class="cover-glow"></div>
+  <div class="cover-content">
+    <p class="cover-eyebrow">Uma declaração vinda direto do meu coração</p>
+    <h1 class="cover-title">Minha Princesa</h1>
+    <div class="cover-divider">
+      <span></span>
+      <span class="cover-heart">♥</span>
+      <span></span>
+    </div>
+    <p class="cover-sub">Para você — sempre e para sempre</p>
+  </div>
+  <div class="scroll-hint">Descer</div>
+</div>
+
+<div class="page">
+  <section class="letter-section reveal">
+    <div class="ornament">✦ &nbsp; &nbsp; ✦</div>
+    <div class="letter-paper">
+      <div class="letter-greeting">Minha Princesa, Kaylane</div>
+
+      <div class="letter-body">
+        <p>Há momentos na vida que mudam tudo. Um pensamento, uma ideia, uma pequena ação que se torna algo <em>muito</em> maior. Pra mim, foi uma simples mensagem, sem pensar muito, que veio a se tornar algo extraordinário.</p>
+
+        <p>Cada dia com você é um presente que eu nunca imaginaria um dia ter. Algo que para mim era impossível, além da minha própria imaginação e até dos meus sonhos... Veio a se tornar realidade.</p>
+
+        <p>Eu não tenho as palavras certas para expressar o que eu sinto por você, nunca tive, e na verdade elas nem existem dentro das limitações linguísticas desse plano terrestre.</p>
+
+        <p>Você é a melhor coisa que já me aconteceu, minha princesa. Não importa se estou perto ou longe, eu te amo cada vez mais a cada dia, hora, minuto, segundo, milissegundo, microssegundo, nanossegundo, picossegundo, femtossegundo.......... (Você entendeu kkkkkkk) que se passa.</p>
+
+        <p>Obrigado por surgir na minha vida. Obrigado por me deixar surgir na sua.</p>
+      </div>
+      <div class="letter-sign">Com todo meu amor, João Vítor</div>
+    </div>
+  </section>
+
+  <div class="photos-section">
+    <div class="photos-inner reveal">
+      <div class="ornament">✦ &nbsp; &nbsp; ✦</div>
+      <h2 class="photos-heading">Nossa História... Até agora</h2>
+
+      <div class="photo-grid" id="photoGrid">
+
+        <div class="photo-frame" data-index="0">
+          <img class="photo-slot" src="1.jpg" alt="Our photo"/>
+          <span class="photo-caption">Nosso primeiro encontro ♡</span>
+        </div>
+
+        <div class="photo-frame" data-index="1">
+          <img class="photo-slot" src="2.jpg" alt="Our photo"/>
+          <span class="photo-caption">CLARITY!!!</span>
+        </div>
+
+        <div class="photo-frame" data-index="2">
+          <img class="photo-slot" src="3.jpg" alt="Our photo"/>
+          <span class="photo-caption">Uma noite perfeita</span>
+        </div>
+
+        <div class="photo-frame" data-index="3">
+          <img class="photo-slot" src="4.jpg" alt="Our photo"/>
+          <span class="photo-caption">Último dia em Belém</span>
+        </div>
+
+        <div class="photo-frame" data-index="4">
+          <img class="photo-slot" src="5.jpg" alt="Our photo"/>
+          <span class="photo-caption">Primeira virada de ano juntos</span>
+        </div>
+
+        <div class="photo-frame" data-index="5">
+          <img class="photo-slot" src="6.png" alt="Our photo"/>
+          <span class="photo-caption">Passeando em Paulo Afonso</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <section class="reasons-section reveal">
+    <div class="ornament">✦ &nbsp; &nbsp; ✦</div>
+    <h2 class="reasons-heading">Motivos pelos quais te amo</h2>
+    <p class="reasons-sub">apenas alguns dos infinitos</p>
+    <ul class="reasons-list">
+      <li class="reason-item"><span class="reason-num">01</span><span class="reason-text">O jeito que seus olhos brilham e seu lindo sorriso abre quando você olha pra mim... Faz eu me sentir especial.</span></li>
+      <li class="reason-item"><span class="reason-num">02</span><span class="reason-text">O quão fofa você é a qualquer momento, sempre um doce de pessoa, sempre incrível, sempre uma legítima princesa.</span></li>
+      <li class="reason-item"><span class="reason-num">03</span><span class="reason-text">O seu interesse em aprender coisas novas, e sempre me incluir nelas quando surgem.</span></li>
+      <li class="reason-item"><span class="reason-num">04</span><span class="reason-text">A excelência em tudo que você faz. Evidentemente vejo que perfeição sempre gera perfeição.</span></li>
+      <li class="reason-item"><span class="reason-num">05</span><span class="reason-text">A sua beleza de fora deste universo, a qual não sou e nunca serei capaz de expressar em palavras.</span></li>
+      <li class="reason-item"><span class="reason-num">06</span><span class="reason-text">E tudo aquilo que eu sempre sonhei e nunca imaginei que encontraria em alguém nem nos meus sonhos mais distantes da realidade.</span></li>
+    </ul>
+  </section>
+
+  <section class="timeline-section reveal">
+    <div class="ornament">✦ &nbsp; &nbsp; ✦</div>
+    <h2 class="timeline-heading">Momentos que eu guardo</h2>
+    <p class="timeline-sub">escritos na memória do meu coração</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">06/12/2025</div>
+        <div class="tl-title">O Nosso Primeiro Encontro</div>
+        <div class="tl-desc">Eu estava nervoso e você percebeu isso... Era meio óbvio. Seu jeito de ser me deixou mais à vontade com o tempo.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">12/12/2025</div>
+        <div class="tl-title">A Noite do Macarrão</div>
+        <div class="tl-desc">Revelamos "ao mundo" o nosso relacionamento pela primeira vez, postando uma foto de mãos dadas.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">20/12/2025</div>
+        <div class="tl-title">Primeiro Treino Juntos</div>
+        <div class="tl-desc">Fomos à academia, fizemos nosso primeiro treino juntos, e seus conhecidos da academia nos importunaram kkkkkkkkk</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">20/12/2025</div>
+        <div class="tl-title">Bolhas de Sabão</div>
+        <div class="tl-desc">Ainda no dia da academia, vivemos um momento romântico rodeados por bolhas de sabão feitas por uma criança que brincava no parque.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">01/01/2026</div>
+        <div class="tl-title">Nosso Primeiro Réveillon</div>
+        <div class="tl-desc">Oficializamos nosso relacionamento, um momento verdadeiramente especial, que eu sempre vou guardar com carinho.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">30/01/2026</div>
+        <div class="tl-title">Primeiro Dia em Paulo Afonso</div>
+        <div class="tl-desc">Após passarmos um mês inteiro longe um do outro, finalmente nos vimos novamente para matar a saudade incessante.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">13/02/2026</div>
+        <div class="tl-title">Vida de Casal?</div>
+        <div class="tl-desc">Nesse dia você veio e passamos o maior tempo juntos até agora, morando sozinhos como um casal.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Hoje &amp; todos os dias depois</div>
+        <div class="tl-title">O Resto da Nossa História</div>
+        <div class="tl-desc">Ainda sendo escrita, um lindo dia de cada vez — com você.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="closing-section">
+  <span class="closing-heart">♥</span>
+  <p class="closing-quote">"Eu te amo não só por quem você é, mas por quem sou quando estou com você."</p>
+  <p class="closing-attr">— Elizabeth Barrett Browning</p>
+  <div class="closing-sign">Para sempre seu, João Vítor</div>
+</div>
+
+<script>
+  const wrap = document.getElementById('petals');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      animation-duration: ${8 + Math.random() * 10}s;
+      animation-delay: ${Math.random() * 12}s;
+      transform: rotate(${Math.random() * 360}deg);
+      width: ${8 + Math.random() * 10}px;
+      height: ${12 + Math.random() * 10}px;
+    `;
+    wrap.appendChild(p);
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
